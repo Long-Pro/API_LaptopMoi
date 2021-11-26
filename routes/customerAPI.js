@@ -43,26 +43,10 @@ router.get('/getListBrand', function (req, res) {
     res.json(docs)
   })
 })
-router.post('/createBrand', function (req, res) {
-  const {name}=req.body
-  console.log( {name})
-  const brand=new Brand({name})
-  brand.save((err,docs)=>{
-    console.log(docs)
-    if(err) 
-      return res.json({
-        type:FAIL,
-        message:['Thêm mới thương hiệu thất bại']
-      })
-    res.json({
-      type:SUCCESS,
-      message:['Thêm mới thương hiệu thành công']
-    })
-  })
-})
+
 // --------------------------------------------------------Product-----------------------------------------------------
 router.get('/getListProduct', function (req, res) {
-  Product.find({},(err,docs)=>{
+  Product.find({}).populate('brand').exec((err,docs)=>{
     if (err) return handleError(err);
     res.json(docs)
   })
