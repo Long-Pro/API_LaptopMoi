@@ -1,5 +1,7 @@
 var express = require('express')
 var router = express.Router()
+var md5 = require('md5');
+
 var Customer=require('../models/Customer')
 var Brand=require('../models/Brand')
 var Cart=require('../models/Cart')
@@ -32,7 +34,7 @@ router.post('/createCustomer', async function (req, res) {
 router.post('/login',  function (req, res) {
   const {account,password}=req.body
   console.log( {account,password})
-  Customer.findOne({account,password},(err,docs)=>{
+  Customer.findOne({account,password:md5(password)},(err,docs)=>{
     if(err) return res.json({
       type:FAIL,
       message:['Đăng nhập thất bại']
