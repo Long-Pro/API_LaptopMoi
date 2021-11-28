@@ -91,7 +91,18 @@ router.get('/getListProduct', function (req, res) {
 })
 router.get('/getListProductByBrand', function (req, res) {
   let {brand}=req.query
-  Product.find({brand:brand},(err,docs)=>{
+  // Product.find({brand:brand},(err,docs)=>{
+  //   if(err) return res.json({
+  //     type:FAIL,
+  //     message:['Tải danh sách sản phẩm thất bại']
+  //   })
+  //   res.json({
+  //     type:SUCCESS,
+  //     message:['Tải danh sách sản phẩm thành công'],
+  //     data:docs
+  //   })
+  // })
+  Product.find({brand}).populate('brand').exec((err,docs)=>{
     if(err) return res.json({
       type:FAIL,
       message:['Tải danh sách sản phẩm thất bại']
