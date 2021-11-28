@@ -29,6 +29,27 @@ router.post('/createCustomer', async function (req, res) {
     })
   }
 })
+router.post('/login',  function (req, res) {
+  const {account,password}=req.body
+  console.log( {account,password})
+  Customer.findOne({account,password},(err,docs)=>{
+    if(err) return res.json({
+      type:FAIL,
+      message:['Đăng nhập thất bại']
+    })
+    if(docs) return res.json({
+      type:SUCCESS,
+      message:['Đăng nhập thành công'],
+      data:docs
+    })
+    return res.json({
+      type:FAIL,
+      message:['Tài khoản hoặc mật khẩu không đúng'],
+      data:docs
+    })
+  })
+
+})
 // define the about route
 router.get('/getListCustomer', function (req, res) {
   Customer.find({},(err,docs)=>{
