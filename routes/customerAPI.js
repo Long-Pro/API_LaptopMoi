@@ -140,6 +140,15 @@ router.post('/getCart', function (req, res) {
           path: "product",
       },
     })
+    .populate({
+      path: "products",
+      populate: {
+          path: "product",
+          populate: {
+            path: "brand",
+        },
+      },
+    })
     .exec((err,docs)=>{
       if(err) return res.json({
         type:FAIL,
