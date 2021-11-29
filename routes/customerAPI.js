@@ -148,7 +148,7 @@ router.post('/getCart', function (req, res) {
       res.json({
         type:SUCCESS,
         message:['Tải giỏ hàng thành công'],
-        data:docs
+        data:docs??[]
       })
     })
 })
