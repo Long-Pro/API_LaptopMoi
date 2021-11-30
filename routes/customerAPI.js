@@ -190,12 +190,29 @@ router.post('/updateCart', async function (req, res) {
       }
       products.push(objCart)
     }
-    console.log(products)
-    Cart.findOneAndUpdate({customer},{products},{new:true},(err,docs)=>{
+    // console.log(products)
+    Cart.findOneAndUpdate({customer},{products},{new:true})
+    .populate({
+      path: "products",
+      populate: {
+          path: "product",
+      },
+    })
+    .populate({
+      path: "products",
+      populate: {
+          path: "product",
+          populate: {
+            path: "brand",
+        },
+      },
+    })
+    .exec((err,docs)=>{
       if(err) return res.json({
         type:FAIL,
         message:['Cập nhật giỏ hàng thất bại']
       })
+      console.log(docs)
       res.json({
         type:SUCCESS,
         message:['Cập nhật giỏ hàng thành công'],
@@ -204,28 +221,39 @@ router.post('/updateCart', async function (req, res) {
     })
   }else{// k tìm thấy customer
     Cart.create({customer,products:[{product,quantity}]},(err,docs)=>{
-      console.log(err,docs)
-      if(err) return res.json({
-        type:FAIL,
-        message:['Cập nhật giỏ hàng thất bại']
+      console.log(docs)
+    Cart.findOne({customer})
+      .populate({
+        path: "products",
+        populate: {
+            path: "product",
+        },
       })
-      res.json({
-        type:SUCCESS,
-        message:['Cập nhật giỏ hàng thành công'],
-        data:docs
+      .populate({
+        path: "products",
+        populate: {
+            path: "product",
+            populate: {
+              path: "brand",
+          },
+        },
       })
+      .exec((err,docs)=>{
+        if(err) return res.json({
+          type:FAIL,
+          message:['Cập nhật giỏ hàng thất bại']
+        })
+        console.log(docs)
+        res.json({
+          type:SUCCESS,
+          message:['Cập nhật giỏ hàng thành công'],
+          data:docs
+        })
+      })
+
     })
 
   }
-
-
-
-
-
-
-
-
-
 })
 
 
