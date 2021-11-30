@@ -154,10 +154,12 @@ router.post('/getCart', function (req, res) {
         type:FAIL,
         message:['Tải giỏ hàng thất bại']
       })
+      console.log(docs)
+      if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
       res.json({
         type:SUCCESS,
         message:['Tải giỏ hàng thành công'],
-        data:docs??[]
+        data:docs??{products:[]}
       })
     })
 })
