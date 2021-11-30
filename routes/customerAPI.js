@@ -212,7 +212,7 @@ router.post('/updateCart', async function (req, res) {
         type:FAIL,
         message:['Cập nhật giỏ hàng thất bại']
       })
-      console.log(docs)
+      if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
       res.json({
         type:SUCCESS,
         message:['Cập nhật giỏ hàng thành công'],
@@ -243,7 +243,8 @@ router.post('/updateCart', async function (req, res) {
           type:FAIL,
           message:['Cập nhật giỏ hàng thất bại']
         })
-        console.log(docs)
+        //console.log(docs)
+        if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
         res.json({
           type:SUCCESS,
           message:['Cập nhật giỏ hàng thành công'],
