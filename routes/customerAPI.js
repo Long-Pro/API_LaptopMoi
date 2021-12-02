@@ -177,12 +177,14 @@ router.post('/updateCart', async function (req, res) {
       objCart=products[index]
       if(type=='C'){
         objCart.quantity+=quantity
+        products[index]=objCart
       }
       if(type=='D'){
         if(objCart.quantity<=quantity)  objCart.quantity=0
         else objCart.quantity-=quantity
+        if(objCart.quantity==0) products.splice(index,1)
       }
-      products[index]=objCart
+      
     }else{
       objCart.product=product
       if(type=='C'){
@@ -222,38 +224,36 @@ router.post('/updateCart', async function (req, res) {
   }else{// k tìm thấy customer
     Cart.create({customer,products:[{product,quantity}]},(err,docs)=>{
       console.log(docs)
-    Cart.findOne({customer})
-      .populate({
-        path: "products",
-        populate: {
-            path: "product",
-        },
-      })
-      .populate({
-        path: "products",
-        populate: {
-            path: "product",
-            populate: {
-              path: "brand",
+      Cart.findOne({customer})
+        .populate({
+          path: "products",
+          populate: {
+              path: "product",
           },
-        },
-      })
-      .exec((err,docs)=>{
-        if(err) return res.json({
-          type:FAIL,
-          message:['Cập nhật giỏ hàng thất bại']
         })
-        //console.log(docs)
-        if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
-        res.json({
-          type:SUCCESS,
-          message:['Cập nhật giỏ hàng thành công'],
-          data:docs
+        .populate({
+          path: "products",
+          populate: {
+              path: "product",
+              populate: {
+                path: "brand",
+            },
+          },
         })
-      })
-
+        .exec((err,docs)=>{
+          if(err) return res.json({
+            type:FAIL,
+            message:['Cập nhật giỏ hàng thất bại']
+          })
+          //console.log(docs)
+          if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
+          res.json({
+            type:SUCCESS,
+            message:['Cập nhật giỏ hàng thành công'],
+            data:docs
+          })
+        })
     })
-
   }
 })
 
