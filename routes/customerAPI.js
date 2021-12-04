@@ -59,9 +59,17 @@ router.post('/editCustomer', async function (req, res) {
   })
 })
 router.post('/changePass', async function (req, res) {
-  const {_id,password}=req.body
-  console.log( {_id,password})
-  Customer.findOneAndUpdate({_id},{password},{new:true},(err,docs)=>{
+  const {_id,password,newPassword}=req.body
+  // console.log( {_id,password,newPassword})
+  let x=await Customer.findOne({_id,password:md5(password)})
+  if(!x){
+    res.json({
+      type:FAIL,
+      message:['Mật khẩu không chính xác'],
+    })  
+    return
+  }
+  Customer.findOneAndUpdate({_id},{password:md5(newPassword)},{new:true},(err,docs)=>{
     if(err){
       res.json({
         type:FAIL,
