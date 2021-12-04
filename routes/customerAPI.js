@@ -31,6 +31,35 @@ router.post('/createCustomer', async function (req, res) {
     })
   }
 })
+router.post('/editCustomer', async function (req, res) {
+  const {name,address,birthday,phone,_id}=req.body
+  console.log( {name,address,birthday,phone,_id})
+  let x=await Customer.find({_id:{$ne:_id},phone});
+  if(x.length>0){
+    res.json({
+      type:FAIL,
+      message:['Số điện thoại đã tồn tại']
+    })
+    return
+  }
+
+  Customer.findOneAndUpdate({_id},{name,address,birthday,phone},{new:true},(err,docs)=>{
+    if(err){
+      res.json({
+        type:FAIL,
+        message:['Số điện thoại đã tồn tại'],
+      })  
+      return
+    }
+    res.json({
+      type:SUCCESS,
+      message:['Chỉnh sửa thông tin thành công'],
+      data:docs
+    })
+  })
+
+
+})
 router.post('/login',  function (req, res) {
   const {account,password}=req.body
   console.log( {account,password})
