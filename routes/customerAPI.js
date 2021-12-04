@@ -47,7 +47,7 @@ router.post('/editCustomer', async function (req, res) {
     if(err){
       res.json({
         type:FAIL,
-        message:['Số điện thoại đã tồn tại'],
+        message:['Chỉnh sửa thông tin thất bại'],
       })  
       return
     }
@@ -57,8 +57,24 @@ router.post('/editCustomer', async function (req, res) {
       data:docs
     })
   })
-
-
+})
+router.post('/changePass', async function (req, res) {
+  const {_id,password}=req.body
+  console.log( {_id,password})
+  Customer.findOneAndUpdate({_id},{password},{new:true},(err,docs)=>{
+    if(err){
+      res.json({
+        type:FAIL,
+        message:['Đổi mật khẩu thất bại'],
+      })  
+      return
+    }
+    res.json({
+      type:SUCCESS,
+      message:['Đổi mật khẩu thành công'],
+      data:docs
+    })
+  })
 })
 router.post('/login',  function (req, res) {
   const {account,password}=req.body
