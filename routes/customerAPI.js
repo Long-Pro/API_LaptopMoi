@@ -6,6 +6,8 @@ var Customer=require('../models/Customer')
 var Brand=require('../models/Brand')
 var Cart=require('../models/Cart')
 var Product=require('../models/Product')
+var Bill=require('../models/Bill')
+
 var {SUCCESS,FAIL}=require('../config') 
 
 // -------------------------------------------------------------Customer ---------------------------------------------------------
@@ -144,17 +146,6 @@ router.get('/getListProduct', function (req, res) {
 })
 router.get('/getListProductByBrand', function (req, res) {
   let {brand}=req.query
-  // Product.find({brand:brand},(err,docs)=>{
-  //   if(err) return res.json({
-  //     type:FAIL,
-  //     message:['Tải danh sách sản phẩm thất bại']
-  //   })
-  //   res.json({
-  //     type:SUCCESS,
-  //     message:['Tải danh sách sản phẩm thành công'],
-  //     data:docs
-  //   })
-  // })
   Product.find({brand}).populate('brand').exec((err,docs)=>{
     if(err) return res.json({
       type:FAIL,
@@ -309,7 +300,50 @@ router.post('/updateCart', async function (req, res) {
     })
   }
 })
+router.post('/addToBill', async function (req, res) {
+  let {customer,data}=req.body
+  // console.log({customer,data})
+  Bill.create({customer,products:data,type:1},async (err,docs)=>{
+    let x=await Cart.findOne({customer})
+    let products=x.products
+    console.log(products.length)
+    data.forEach((item,index)=>{
+      let y=products.findIndex(product=>product.product==item.product)
+      products.splice(y,1)
+    })
+    console.log(products.length)
 
+    Cart.findOneAndUpdate({customer},{products},{new:true})
+    .populate({
+      path: "products",
+      populate: {
+          path: "product",
+      },
+    })
+    .populate({
+      path: "products",
+      populate: {
+          path: "product",
+          populate: {
+            path: "brand",
+        },
+      },
+    })
+    .exec((err,docs)=>{
+      if(err) return res.json({
+        type:FAIL,
+        message:['Đặt hàng thất bại']
+      })
+      res.json({
+        type:SUCCESS,
+        message:['Đặt hàng thành công'],
+        data:docs
+      })
+    })
+
+
+  })
+})
 
 
 

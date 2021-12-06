@@ -21,5 +21,4 @@ StaffSchema.statics.checkRepeatAccount = function(value) {
 StaffSchema.statics.checkRepeatEmail = function(value) {
   return  this.count({ email:value});
 };
-const Customer = mongoose.model('Customer', CustomerSchema);
-module.exports=Customer
+module.exports = mongoose.model('Staff', StaffSchema);
