@@ -11,5 +11,6 @@ const BillShema = new Schema({
     quantity:Number
   }],
   staff:{ type: Schema.Types.ObjectId, ref: 'Staff' },
+  address:String
 },{collection:'bill',timestamps:true});
 module.exports = mongoose.model('Bill', BillShema);
