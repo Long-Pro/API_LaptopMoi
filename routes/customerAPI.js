@@ -303,7 +303,7 @@ router.post('/updateCart', async function (req, res) {
 router.post('/addToBill', async function (req, res) {
   let {customer,data}=req.body
   // console.log({customer,data})
-  Bill.create({customer,products:data,type:1},async (err,docs)=>{
+  Bill.create({customer,products:data,type:1,staff:null},async (err,docs)=>{
     let x=await Cart.findOne({customer})
     let products=x.products
     console.log(products.length)
