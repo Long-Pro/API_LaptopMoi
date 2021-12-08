@@ -303,6 +303,7 @@ router.post('/updateCart', async function (req, res) {
 router.post('/addToBill', async function (req, res) {
   let {customer,data}=req.body
   // console.log({customer,data})
+  // type:Number,//0-đã hủy    1-đang xử lí    2-đag giao    3-đã giao
   Bill.create({customer,products:data,type:1,staff:null},async (err,docs)=>{
     let x=await Cart.findOne({customer})
     let products=x.products
@@ -340,9 +341,40 @@ router.post('/addToBill', async function (req, res) {
         data:docs
       })
     })
-
-
   })
+})
+router.post('/getListOrdering', function (req, res) {
+  let {customer}=req.body
+  console.log(req.body)
+  Bill.find({customer,type:1})
+    .populate({
+      path: "products",
+      populate: {
+          path: "product",
+      },
+    })
+    .populate({
+      path: "products",
+      populate: {
+          path: "product",
+          populate: {
+            path: "brand",
+        },
+      },
+    })
+    .exec((err,docs)=>{
+      if(err) return res.json({
+        type:FAIL,
+        message:['Tải danh sách đơn hàng đang đặt thất bại']
+      })
+      console.log(docs)
+      //if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
+      res.json({
+        type:SUCCESS,
+        message:['Tải danh sách đơn hàng đang đặt thành công'],
+        data:docs
+      })
+    })
 })
 
 
