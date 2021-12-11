@@ -9,6 +9,7 @@ const BillShema = new Schema({
       ref: 'Product'
     },
     quantity:Number,
+    price:Number
   }],
   staff:{ type: Schema.Types.ObjectId, ref: 'Staff' },
   address:String,
