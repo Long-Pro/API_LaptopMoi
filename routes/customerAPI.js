@@ -301,18 +301,21 @@ router.post('/updateCart', async function (req, res) {
   }
 })
 router.post('/addToBill', async function (req, res) {
+  console.log('-------------------')
   let {customer,data,address,phone}=req.body
   // console.log({customer,data})
   // type:Number,//0-đã hủy    1-đang xử lí    2-đag giao    3-đã giao
+
+  console.log('data',data)
   Bill.create({customer,products:data,type:1,staff:null,address,phone},async (err,docs)=>{
     let x=await Cart.findOne({customer})
     let products=x.products
-    console.log(products.length)
+    console.log('products',products)
     data.forEach((item,index)=>{
-      let y=products.findIndex(product=>product.product==item.product)
+      let y=products.findIndex(product=>product.product==item.product._id)
       products.splice(y,1)
     })
-    console.log(products.length)
+    console.log('products',products)
 
     Cart.findOneAndUpdate({customer},{products},{new:true})
     .populate({
