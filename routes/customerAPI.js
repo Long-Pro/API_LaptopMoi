@@ -301,10 +301,10 @@ router.post('/updateCart', async function (req, res) {
   }
 })
 router.post('/addToBill', async function (req, res) {
-  let {customer,data,address}=req.body
+  let {customer,data,address,phone}=req.body
   // console.log({customer,data})
   // type:Number,//0-đã hủy    1-đang xử lí    2-đag giao    3-đã giao
-  Bill.create({customer,products:data,type:1,staff:null,address},async (err,docs)=>{
+  Bill.create({customer,products:data,type:1,staff:null,address,phone},async (err,docs)=>{
     let x=await Cart.findOne({customer})
     let products=x.products
     console.log(products.length)

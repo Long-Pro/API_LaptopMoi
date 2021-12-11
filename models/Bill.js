@@ -8,9 +8,10 @@ const BillShema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Product'
     },
-    quantity:Number
+    quantity:Number,
   }],
   staff:{ type: Schema.Types.ObjectId, ref: 'Staff' },
-  address:String
+  address:String,
+  phone:String,
 },{collection:'bill',timestamps:true});
 module.exports = mongoose.model('Bill', BillShema);
