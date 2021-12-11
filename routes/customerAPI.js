@@ -198,7 +198,7 @@ router.post('/getCart', function (req, res) {
         type:FAIL,
         message:['Tải giỏ hàng thất bại']
       })
-      console.log(docs)
+      // console.log(docs)
       if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
       res.json({
         type:SUCCESS,
@@ -335,6 +335,7 @@ router.post('/addToBill', async function (req, res) {
         type:FAIL,
         message:['Đặt hàng thất bại']
       })
+      if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
       res.json({
         type:SUCCESS,
         message:['Đặt hàng thành công'],
