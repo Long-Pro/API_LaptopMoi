@@ -348,9 +348,37 @@ router.post('/addToBill', async function (req, res) {
   })
 })
 router.post('/cancelBill',async (req,res)=>{
-  let {customer,bill}=req.body
+  let {customer,bill,type}=req.body
   await Bill.findByIdAndUpdate(bill,{type:0})
-
+  Bill.find({customer,type})
+    .populate({
+      path: "products",
+      populate: {
+          path: "product",
+      },
+    })
+    .populate({
+      path: "products",
+      populate: {
+          path: "product",
+          populate: {
+            path: "brand",
+        },
+      },
+    })
+    .exec((err,docs)=>{
+      if(err) return res.json({
+        type:FAIL,
+        message:['Tải danh sách đơn hàng thất bại']
+      })
+      console.log(docs)
+      //if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
+      res.json({
+        type:SUCCESS,
+        message:['Tải danh sách đơn hàng thành công'],
+        data:docs
+      })
+    })
 })
 router.post('/getListBill', function (req, res) {
   let {customer,type}=req.body
@@ -374,13 +402,13 @@ router.post('/getListBill', function (req, res) {
     .exec((err,docs)=>{
       if(err) return res.json({
         type:FAIL,
-        message:['Tải danh sách đơn hàng đang đặt thất bại']
+        message:['Tải danh sách đơn hàng thất bại']
       })
       console.log(docs)
       //if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
       res.json({
         type:SUCCESS,
-        message:['Tải danh sách đơn hàng đang đặt thành công'],
+        message:['Tải danh sách đơn hàng thành công'],
         data:docs
       })
     })
