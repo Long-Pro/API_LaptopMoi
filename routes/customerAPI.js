@@ -380,6 +380,21 @@ router.post('/cancelBill',async (req,res)=>{
       })
     })
 })
+router.post('/onlyCancelBill',async (req,res)=>{
+  let {bill}=req.body
+  Bill.findByIdAndUpdate(bill,{type:0},(err,docs)=>{
+    if(err) return res.json({
+      type:FAIL,
+      message:['Hủy đơn hàng thất bại']
+    })
+    // console.log(docs)
+    //if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
+    res.json({
+      type:SUCCESS,
+      message:['Hủy đơn hàng đơn hàng thành công'],
+    })
+  })
+})
 router.post('/getListBill', function (req, res) {
   let {customer,type}=req.body
   // console.log(req.body)
