@@ -300,6 +300,7 @@ router.post('/updateCart', async function (req, res) {
     })
   }
 })
+// Bill
 router.post('/addToBill', async function (req, res) {
   // console.log('-------------------')
   let {customer,data,address,phone}=req.body
@@ -346,10 +347,15 @@ router.post('/addToBill', async function (req, res) {
     })
   })
 })
-router.post('/getListOrdering', function (req, res) {
-  let {customer}=req.body
+router.post('/cancelBill',async (req,res)=>{
+  let {customer,bill}=req.body
+  await Bill.findByIdAndUpdate(bill,{type:0})
+
+})
+router.post('/getListBill', function (req, res) {
+  let {customer,type}=req.body
   // console.log(req.body)
-  Bill.find({customer,type:1})
+  Bill.find({customer,type})
     .populate({
       path: "products",
       populate: {
@@ -379,105 +385,7 @@ router.post('/getListOrdering', function (req, res) {
       })
     })
 })
-router.post('/getListOrderDelivering', function (req, res) {
-  let {customer}=req.body
-  // console.log(req.body)
-  Bill.find({customer,type:2})
-    .populate({
-      path: "products",
-      populate: {
-          path: "product",
-      },
-    })
-    .populate({
-      path: "products",
-      populate: {
-          path: "product",
-          populate: {
-            path: "brand",
-        },
-      },
-    })
-    .exec((err,docs)=>{
-      if(err) return res.json({
-        type:FAIL,
-        message:['Tải danh sách đơn hàng đang đặt thất bại']
-      })
-      console.log(docs)
-      //if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
-      res.json({
-        type:SUCCESS,
-        message:['Tải danh sách đơn hàng đang đặt thành công'],
-        data:docs
-      })
-    })
-})
-router.post('/getListOrdered', function (req, res) {
-  let {customer}=req.body
-  // console.log(req.body)
-  Bill.find({customer,type:3})
-    .populate({
-      path: "products",
-      populate: {
-          path: "product",
-      },
-    })
-    .populate({
-      path: "products",
-      populate: {
-          path: "product",
-          populate: {
-            path: "brand",
-        },
-      },
-    })
-    .exec((err,docs)=>{
-      if(err) return res.json({
-        type:FAIL,
-        message:['Tải danh sách đơn hàng đang đặt thất bại']
-      })
-      console.log(docs)
-      //if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
-      res.json({
-        type:SUCCESS,
-        message:['Tải danh sách đơn hàng đang đặt thành công'],
-        data:docs
-      })
-    })
-})
-router.post('/getListOrderCanceled', function (req, res) {
-  let {customer}=req.body
-  // console.log(req.body)
-  Bill.find({customer,type:0})
-    .populate({
-      path: "products",
-      populate: {
-          path: "product",
-      },
-    })
-    .populate({
-      path: "products",
-      populate: {
-          path: "product",
-          populate: {
-            path: "brand",
-        },
-      },
-    })
-    .exec((err,docs)=>{
-      if(err) return res.json({
-        type:FAIL,
-        message:['Tải danh sách đơn hàng đang đặt thất bại']
-      })
-      console.log(docs)
-      //if(docs) docs.products.sort((a,b)=>a.product.brand.name.localeCompare(b.product.brand.name))
-      res.json({
-        type:SUCCESS,
-        message:['Tải danh sách đơn hàng đang đặt thành công'],
-        data:docs
-      })
-    })
-})
+
 
 
 
