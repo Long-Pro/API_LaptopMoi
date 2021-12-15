@@ -14,7 +14,7 @@ var {SUCCESS,FAIL}=require('../config')
 router.post('/createCustomer', async function (req, res) {
   const {name,address,birthday,phone,account,password}=req.body
   console.log( {name,address,birthday,phone,account,password})
-  const customer=new Customer({name,address,birthday,phone,account,password})
+  const customer=new Customer({name,address,birthday,phone,account,password:md5(password)})
   let message=[]
   let x=await Customer.checkRepeatPhone(phone);
   if(x) message.push('Số điện thoại đã tồn tại')
