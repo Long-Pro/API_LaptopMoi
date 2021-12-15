@@ -19,6 +19,7 @@ router.post('/createCustomer', async function (req, res) {
   let x=await Customer.checkRepeatPhone(phone);
   if(x) message.push('Số điện thoại đã tồn tại')
   x=await Customer.checkRepeatAccount(account);
+  
   if(x) message.push('Tài khoản đã tồn tại')
   if(message.length){
     res.json({
@@ -26,10 +27,11 @@ router.post('/createCustomer', async function (req, res) {
       message
     })
   }else{
-    await customer.save()
+    let x=await customer.save()
     res.json({
       type:SUCCESS,
-      message:['Đăng kí tài khoản thành công']
+      message:['Đăng kí tài khoản thành công'],
+      data:x
     })
   }
 })
