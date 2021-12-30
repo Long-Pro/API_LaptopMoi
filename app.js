@@ -8,8 +8,14 @@ const bodyParser = require('body-parser')
 const { dbURL }=require('./config')
 
 var indexRouter = require('./routes/index');
-const  customerRouter = require('./routes/customerAPI');
-const  staffRouter = require('./routes/staffAPI');
+var customersRouter = require('./routes/customers');
+var brandsRouter = require('./routes/brands');
+var productsRouter = require('./routes/products');
+var cartRouter = require('./routes/cart');
+var billsRouter = require('./routes/bills');
+var staffsRouter = require('./routes/staffs');
+
+
 
 
 var app = express();
@@ -39,10 +45,17 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use('/customerAPI', customerRouter);
-app.use('/staffAPI', staffRouter);
-app.use('/', indexRouter);
 
+
+
+
+app.use('/customers', customersRouter);
+app.use('/brands', brandsRouter);
+app.use('/products', productsRouter);
+app.use('/cart', cartRouter);
+app.use('/bills', billsRouter);
+app.use('/staffs', staffsRouter);
+app.use('/', indexRouter);
 
 
 // catch 404 and forward to error handler
