@@ -1,6 +1,7 @@
 var express = require('express')
 var router = express.Router()
 var md5 = require('md5');
+var jwt = require('jsonwebtoken');
 
 var Customer=require('../models/Customer')
 var Brand=require('../models/Brand')
@@ -8,7 +9,7 @@ var Cart=require('../models/Cart')
 var Product=require('../models/Product')
 var Bill=require('../models/Bill')
 
-var {SUCCESS,FAIL}=require('../config')
+var {SUCCESS,FAIL,secret}=require('../config')
 
 
 router.post('/', async function (req, res) {
@@ -91,5 +92,54 @@ router.patch('/:id', async function (req, res) {
   })
 })
 
+router.get('/identifications',  function (req, res) {
+  Customer.find({},(err,docs)=>{
+    // console.log(docs)
+    if(err) return res.json({
+      type:FAIL,
+      message:['Lấy dữ liệu thất bại']
+    })
+    if(docs) {
+      let phones=[],ids=[],accounts=[]
+      docs.forEach(item=>{
+        phones.push(item.phone)
+        ids.push(item._id)
+        accounts.push(item.account)
+      })
+      return res.json({
+        type:SUCCESS,
+        message:['Lấy dữ liệu thành công'],
+        data:{
+          phones,
+          ids,
+          accounts
+        }
+      })
+    }
+  })
+})
+router.get('/information',  function (req, res) {
+  let {id,phone,account}=req.query
+  let obj={_id:id}
+  if(account) obj={account}
+  if(phone) obj={phone}
+  console.log(obj)
+  Customer.findOne(obj,(err,docs)=>{
+    // console.log(docs)
+    if(err) return res.json({
+      type:FAIL,
+      message:['Lấy dữ liệu thất bại']
+    })
+    console.log(docs)
+    if(docs) {
+      return res.json({
+        type:SUCCESS,
+        message:['Lấy dữ liệu thành công'],
+        data:docs
+        
+      })
+    }
+  })
+})
 
 module.exports = router

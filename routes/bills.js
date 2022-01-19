@@ -14,7 +14,7 @@ router.post('/', async function (req, res) {
   // console.log('-------------------')
   let {customer,data,address,phone}=req.body
   // console.log({customer,data})
-  // type:Number,//0-đã hủy    1-đang xử lí    2-đag giao    3-đã giao
+  // type:Number,//0-đã hủy    1-đang chờ xác nhận    2-đag giao    3-đã giao
 
   Bill.create({customer,products:data,type:1,staff:null,address,phone},async (err,docs)=>{
     let x=await Cart.findOne({customer})
@@ -106,6 +106,95 @@ router.delete('/',async (req,res)=>{
       })
     })
 })
+router.get('/customer/:id',(req,res)=>{
+  let {id}=req.params
+  Bill.find({customer:id})
+  .populate('staff')
+  .exec((err, docs)=>{
+    if(err) return res.json({
+      type:FAIL,
+      message:['Tải danh sách đơn hàng thất bại']
+    })
+    console.log(docs)
+    res.json({
+      type:SUCCESS,
+      message:['Tải danh sách đơn hàng thành công'],
+      data:docs
+    })
+  })
+})
+router.get('/ids',  function (req, res) {
+  Bill.find({},(err,docs)=>{
+    // console.log(docs)
+    if(err) return res.json({
+      type:FAIL,
+      message:['Lấy dữ liệu thất bại']
+    })
+    if(docs) {
+      let ids=[]
+      docs.forEach(item=>{
+        ids.push(item._id)
+      })
+      return res.json({
+        type:SUCCESS,
+        message:['Lấy dữ liệu thành công'],
+        data:{
+          ids,   
+        }
+      })
+    }
+  })
+})
+router.get('/id/:id',  function (req, res) {
+  let {id}=req.params
+  Bill.findOne({_id:id})
+  .populate('staff')
+  .populate('customer')
+  .populate({
+    path: "products",
+    populate: {
+        path: "product",
+    },
+  })
+  .populate({
+    path: "products",
+    populate: {
+        path: "product",
+        populate: {
+          path: "brand",
+      },
+    },
+  })
+  .exec((err,docs)=>{
+    if(err) return res.json({
+      type:FAIL,
+      message:['Lấy dữ liệu thất bại']
+    })
+    if(docs) {
+      return res.json({
+        type:SUCCESS,
+        message:['Lấy dữ liệu thành công'],
+        data:docs
+      })
+    }
+  })
+})
+router.patch('/id',  function (req, res) {
+  let {id,type}=req.body
+  Bill.findOneAndUpdate({_id:id},{type},(err,docs)=>{
+    if(err){
+      res.json({
+        type:FAIL,
+        message:['Chỉnh sửa thông tin thất bại'],
+      })  
+      return
+    }
+    res.json({
+      type:SUCCESS,
+      
+    })
+  })
+})
 router.get('/:customer/:type', function (req, res) {
   let {type,customer}=req.params
   // console.log(req.body)
@@ -139,5 +228,6 @@ router.get('/:customer/:type', function (req, res) {
       })
     })
 })
+
 
 module.exports = router
