@@ -56,7 +56,7 @@ app.use('/brands',verifyToken, brandsRouter);
 app.use('/products',verifyToken, productsRouter);
 app.use('/cart',verifyToken, cartRouter);
 app.use('/bills',verifyToken, billsRouter);
-app.use('/staffs',verifyToken, staffsRouter);
+app.use('/staffs', staffsRouter);
 app.use('/', indexRouter);
 
 

@@ -5,6 +5,7 @@ const StaffSchema = new Schema({
   phone:String,
   birthday:Date,
   address:String,
+  gender:String,
   email:String,
   account:String,
   password:String,
