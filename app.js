@@ -52,7 +52,7 @@ app.use(function(req, res, next) {
 
 
 app.use('/customers',verifyToken, customersRouter);
-app.use('/brands',verifyToken, brandsRouter);
+app.use('/brands', brandsRouter);
 app.use('/products',verifyToken, productsRouter);
 app.use('/cart',verifyToken, cartRouter);
 app.use('/bills',verifyToken, billsRouter);

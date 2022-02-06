@@ -41,5 +41,49 @@ router.post('/', function (req, res) {
     })
   })
 })
+router.delete('/:id',async  function (req, res) {
+  let {id}=req.params
+  let isRef=false
+  try {
+    let x=await Product.findOne({brand:id});
+    console.log(x)
+    if(x) isRef=true
+    console.log(isRef)
+    if(isRef) return res.json({
+      type:FAIL,
+      message:['Thương hiệu đã có sản phẩm, không thể xóa']
+    })
+    else Brand.findByIdAndDelete({_id:id},(err,docs)=>{
+      if(err) 
+        return res.json({
+          type:FAIL,
+          message:['Xóa thương hiệu thất bại']
+        })
+      res.json({
+        type:SUCCESS,
+        message:['Xóa thương hiệu thành công']
+      })
+    })
+
+    
+  } catch (error) {
+    
+  }
+})
+router.patch('/:id', function (req, res) {
+  let {id}=req.params
+  let {name,image}=req.body
+  Brand.findOneAndUpdate({_id:id},{name,image},(err,docs)=>{
+    if(err) 
+      return res.json({
+        type:FAIL,
+        message:['Chỉnh sửa thương hiệu thất bại']
+      })
+    res.json({
+      type:SUCCESS,
+      message:['Chỉnh sửa thương hiệu thành công']
+    })
+  })
+})
 
 module.exports = router

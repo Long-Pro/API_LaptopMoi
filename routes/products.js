@@ -69,5 +69,57 @@ router.get('/:id', function (req, res) {
     })
   })
 })
+router.delete('/:id',async function (req, res) {
+  let {id}=req.params
+  try {
+    let x=await Bill.find({})
+    x.forEach(itemX=>{
+      let t=itemX.products.find(item=>item.product==id)
+      if(t) return res.json({
+        type:FAIL,
+        message:['Sản phẩm đã tồn tại trong hóa đơn hoặc giỏ hàng, không thể xóa']
+      })
+    })
+    x=await Cart.find({})
+    x.forEach(itemX=>{
+      let t=itemX.products.find(item=>item.product==id)
+      if(t) return res.json({
+        type:FAIL,
+        message:['Sản phẩm đã tồn tại trong hóa đơn hoặc giỏ hàng, không thể xóa']
+      })
+    })
+    
+    Product.findByIdAndDelete({_id:id},(err,docs)=>{
+      if(err) 
+        return res.json({
+          type:FAIL,
+          message:['Xóa sản phẩm thất bại']
+        })
+      res.json({
+        type:SUCCESS,
+        message:['Xóa sản phẩm thành công']
+      })
+    })
+  } catch (error) {
+    
+  }
+})
+router.patch('/:id', function (req, res) {
+
+  let {id}=req.params
+  // let {name,image}=req.body
+  Product.findOneAndUpdate({_id:id},req.body,(err,docs)=>{
+    if(err) 
+      return res.json({
+        type:FAIL,
+        message:['Chỉnh sửa sản phẩm thất bại']
+      })
+    res.json({
+      type:SUCCESS,
+      message:['Chỉnh sửa sản phẩm thành công']
+    })
+  })
+
+})
 
 module.exports = router

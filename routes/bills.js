@@ -145,6 +145,29 @@ router.get('/ids',  function (req, res) {
     }
   })
 })
+router.get('/ids/type/:type',  function (req, res) {
+  let {type}=req.params
+  Bill.find({type},(err,docs)=>{
+    // console.log(docs)
+    if(err) return res.json({
+      type:FAIL,
+      message:['Lấy dữ liệu thất bại']
+    })
+    if(docs) {
+      let ids=[]
+      docs.forEach(item=>{
+        ids.push(item._id)
+      })
+      return res.json({
+        type:SUCCESS,
+        message:['Lấy dữ liệu thành công'],
+        data:{
+          ids,   
+        }
+      })
+    }
+  })
+})
 router.get('/id/:id',  function (req, res) {
   let {id}=req.params
   Bill.findOne({_id:id})
