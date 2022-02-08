@@ -12,30 +12,7 @@ var Bill=require('../models/Bill')
 var {SUCCESS,FAIL,secret}=require('../config')
 
 
-router.post('/', async function (req, res) {
-  const {name,address,birthday,phone,account,password}=req.body
-  // console.log( {name,address,birthday,phone,account,password})
-  const customer=new Customer({name,address,birthday,phone,account,password:md5(password)})
-  let message=[]
-  let x=await Customer.checkRepeatPhone(phone);
-  if(x) message.push('Số điện thoại đã tồn tại')
-  x=await Customer.checkRepeatAccount(account);
-  
-  if(x) message.push('Tài khoản đã tồn tại')
-  if(message.length){
-    res.json({
-      type:FAIL,
-      message
-    })
-  }else{
-    let x=await customer.save()
-    res.json({
-      type:SUCCESS,
-      message:['Đăng kí tài khoản thành công'],
-      data:x
-    })
-  }
-})
+
 router.patch('/:id/password', async function (req, res) {
   let id=req.params.id
   const {password,newPassword}=req.body

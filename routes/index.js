@@ -38,6 +38,30 @@ router.post('/customer/login',  function (req, res) {
     })
   })
 })
+router.post('/customers', async function (req, res) {
+  const {name,address,birthday,phone,account,password}=req.body
+  // console.log( {name,address,birthday,phone,account,password})
+  const customer=new Customer({name,address,birthday,phone,account,password:md5(password)})
+  let message=[]
+  let x=await Customer.checkRepeatPhone(phone);
+  if(x) message.push('Số điện thoại đã tồn tại')
+  x=await Customer.checkRepeatAccount(account);
+  
+  if(x) message.push('Tài khoản đã tồn tại')
+  if(message.length){
+    res.json({
+      type:FAIL,
+      message
+    })
+  }else{
+    let x=await customer.save()
+    res.json({
+      type:SUCCESS,
+      message:['Đăng kí tài khoản thành công'],
+      data:x
+    })
+  }
+})
 router.post('/staff/login',  function (req, res) {
   // console.log(req.headers)
   // console.log(req.headers['authorization'])
