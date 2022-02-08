@@ -50,14 +50,14 @@ app.use(function(req, res, next) {
 
 
 
-
+app.use('/', indexRouter);
 app.use('/customers',verifyToken, customersRouter);
-app.use('/brands', brandsRouter);
+app.use('/brands',verifyToken, brandsRouter);
 app.use('/products',verifyToken, productsRouter);
 app.use('/cart',verifyToken, cartRouter);
 app.use('/bills',verifyToken, billsRouter);
-app.use('/staffs', staffsRouter);
-app.use('/', indexRouter);
+app.use('/staffs',verifyToken, staffsRouter);
+
 
 
 // catch 404 and forward to error handler
