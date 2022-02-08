@@ -16,20 +16,25 @@ var {SUCCESS,FAIL,secret}=require('../config')
 router.post('/customer/login',  function (req, res) {
   const {account,password}=req.body
   // console.log( {account,password})
-  Customer.findOne({account,password:md5(password)},(err,docs)=>{
+  Customer.findOne({account},(err,docs)=>{
+    console.log({err,docs})
     if(err) return res.json({
       type:FAIL,
       message:['Đăng nhập thất bại']
     })
-    if(docs) return res.json({
-      type:SUCCESS,
-      message:['Đăng nhập thành công'],
-      data:docs
-    })
+    if(docs&&bcrypt.compareSync(password, docs.password)  ){
+      const i = jwt.sign({id:docs._id}, secret);
+      return res.json({
+        type:SUCCESS,
+        message:['Đăng nhập thành công'],
+        data:docs,
+        token:i
+      })
+    } 
     return res.json({
       type:FAIL,
       message:['Tài khoản hoặc mật khẩu không đúng'],
-      data:docs
+      data:null
     })
   })
 })
