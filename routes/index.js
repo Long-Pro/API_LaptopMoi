@@ -41,7 +41,8 @@ router.post('/customer/login',  function (req, res) {
 router.post('/customers', async function (req, res) {
   const {name,address,birthday,phone,account,password}=req.body
   // console.log( {name,address,birthday,phone,account,password})
-  const customer=new Customer({name,address,birthday,phone,account,password:md5(password)})
+  let hashPassword=bcrypt.hashSync(password, saltRounds);
+  
   let message=[]
   let x=await Customer.checkRepeatPhone(phone);
   if(x) message.push('Số điện thoại đã tồn tại')
@@ -54,6 +55,7 @@ router.post('/customers', async function (req, res) {
       message
     })
   }else{
+    const customer=new Customer({name,address,birthday,phone,account,password:hashPassword})
     let x=await customer.save()
     res.json({
       type:SUCCESS,

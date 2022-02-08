@@ -2,6 +2,7 @@ var express = require('express')
 var router = express.Router()
 var md5 = require('md5');
 var jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 var Customer=require('../models/Customer')
 var Brand=require('../models/Brand')
@@ -9,36 +10,45 @@ var Cart=require('../models/Cart')
 var Product=require('../models/Product')
 var Bill=require('../models/Bill')
 
-var {SUCCESS,FAIL,secret}=require('../config')
+var {SUCCESS,FAIL,secret,saltRounds}=require('../config')
 
 
 
 router.patch('/:id/password', async function (req, res) {
   let id=req.params.id
   const {password,newPassword}=req.body
-  // console.log( {_id,password,newPassword})
-  let x=await Customer.findOne({_id:id,password:md5(password)})
-  if(!x){
-    res.json({
+
+  Customer.findOne({_id:id},(err,docs)=>{
+    console.log({err,docs})
+    if(err) return res.json({
       type:FAIL,
-      message:['Mật khẩu không chính xác'],
-    })  
-    return
-  }
-  Customer.findOneAndUpdate({_id:id},{password:md5(newPassword)},{new:true},(err,docs)=>{
-    if(err){
-      res.json({
-        type:FAIL,
-        message:['Đổi mật khẩu thất bại'],
-      })  
-      return
-    }
-    res.json({
-      type:SUCCESS,
-      message:['Đổi mật khẩu thành công'],
-      data:docs
+      message:['Tài khoản không tồn tại']
+    })
+    if(docs&&bcrypt.compareSync(password, docs.password)  ){
+      let hashPassword=bcrypt.hashSync(newPassword, saltRounds);
+      Customer.findOneAndUpdate({_id:id},{password:hashPassword},{new:true},(err,docs)=>{
+        if(err){
+          res.json({
+            type:FAIL,
+            message:['Đổi mật khẩu thất bại'],
+          })  
+          return
+        }
+        return res.json({
+          type:SUCCESS,
+          message:['Đổi mật khẩu  thành công'],
+          data:docs,
+        })
+      })
+      
+    } 
+    return res.json({
+      type:FAIL,
+      message:['Mật khẩu không đúng'],
+      data:null
     })
   })
+
 })
 router.patch('/:id', async function (req, res) {
   let id=req.params.id
