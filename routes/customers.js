@@ -41,8 +41,7 @@ router.patch('/:id/password', async function (req, res) {
         })
       })
       
-    } 
-    return res.json({
+    } else return res.json({
       type:FAIL,
       message:['Mật khẩu không đúng'],
       data:null
