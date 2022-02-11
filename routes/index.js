@@ -11,7 +11,7 @@ var Product=require('../models/Product')
 var Bill=require('../models/Bill')
 var Staff=require('../models/Staff')
 
-var {SUCCESS,FAIL,secret}=require('../config')
+var {SUCCESS,FAIL,secret,saltRounds}=require('../config')
 
 router.post('/customer/login',  function (req, res) {
   const {account,password}=req.body
