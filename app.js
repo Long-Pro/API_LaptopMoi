@@ -15,6 +15,7 @@ var productsRouter = require('./routes/products');
 var cartRouter = require('./routes/cart');
 var billsRouter = require('./routes/bills');
 var staffsRouter = require('./routes/staffs');
+var commentsRouter = require('./routes/comments');
 
 var verifyToken =require('./middleware/verifyToken')
 
@@ -57,7 +58,7 @@ app.use('/products',verifyToken, productsRouter);
 app.use('/cart',verifyToken, cartRouter);
 app.use('/bills',verifyToken, billsRouter);
 app.use('/staffs',verifyToken, staffsRouter);
-
+app.use('/comments',verifyToken, commentsRouter);
 
 
 // catch 404 and forward to error handler

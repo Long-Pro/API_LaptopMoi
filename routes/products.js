@@ -8,8 +8,9 @@ var Cart=require('../models/Cart')
 var Product=require('../models/Product')
 var Bill=require('../models/Bill')
 var Staff=require('../models/Staff')
+const Comment = require('../models/Comment');
 
-var {SUCCESS,FAIL}=require('../config')
+var {SUCCESS,FAIL}=require('../config');
 
 router.get('/', function (req, res) {
   Product.find({}).populate('brand').exec((err,docs)=>{
@@ -65,6 +66,41 @@ router.get('/:id', function (req, res) {
     res.json({
       type:SUCCESS,
       message:['Tải thông tin sản phẩm thành công'],
+      data:docs
+    })
+  })
+})
+router.get('/:id/comments', function (req, res) {
+  let id=req.params.id
+  console.log(id)
+  Comment.find({product:id},(err,docs)=>{
+    if(err) return res.json({
+      type:FAIL,
+      message:['Tải comment thất bại']
+    })
+    res.json({
+      type:SUCCESS,
+      message:['Tải comment thành công'],
+      data:docs
+    })
+  })
+})
+router.post('/:id/comments', function (req, res) {
+  let id=req.params.id
+  let {customer,content,images,star}=req.body
+  console.log( {customer,content,images,star})
+  if(!images) images=[]
+  const comment=new Comment({customer,content,images,star,product:id})
+  comment.save((err,docs)=>{
+    console.log({err,docs})
+    if(err) 
+      return res.json({
+        type:FAIL,
+        message:['Thêm comment thất bại']
+      })
+    res.json({
+      type:SUCCESS,
+      message:['Thêm comment thành công'],
       data:docs
     })
   })
