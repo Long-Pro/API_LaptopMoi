@@ -2,9 +2,6 @@ var {SUCCESS,FAIL,secret}=require('../config')
 var jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
-  
-  return next();
-
   // console.log(req.headers)
   let token=req.headers['x-access-token']
   // console.log('token',token)
