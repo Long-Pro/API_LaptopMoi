@@ -1,6 +1,8 @@
 var express = require('express')
 var router = express.Router()
 var md5 = require('md5');
+var {SUCCESS,FAIL,secret}=require('../config')
+var jwt = require('jsonwebtoken');
 
 var Customer=require('../models/Customer')
 var Brand=require('../models/Brand')
@@ -70,10 +72,29 @@ router.get('/:id', function (req, res) {
     })
   })
 })
-router.get('/:id/comments', function (req, res) {
+router.get('/:id/comments', async function (req, res) {
   let id=req.params.id
   console.log(id)
-  Comment.find({product:id},(err,docs)=>{
+  let isHasCommentPermission=false
+  let token=req.headers['x-access-token']
+  console.log('token',token)
+  
+  let idCustomer=jwt.verify(token, secret).id;
+  console.log('idCustomer',idCustomer)
+
+  let docs=await Bill.find({customer:idCustomer})
+
+  console.log(docs)
+
+
+  docs.forEach(item=>{
+    if(item.products.find(pro=>pro.product==id)) {
+      isHasCommentPermission=true
+      return
+    }
+  })
+
+  Comment.find({product:id}).populate('customer').exec((err,docs)=>{
     if(err) return res.json({
       type:FAIL,
       message:['Tải comment thất bại']
@@ -81,13 +102,15 @@ router.get('/:id/comments', function (req, res) {
     res.json({
       type:SUCCESS,
       message:['Tải comment thành công'],
-      data:docs
+      data:docs,
+      isHasCommentPermission
     })
   })
 })
 router.post('/:id/comments', function (req, res) {
   let id=req.params.id
   let {customer,content,images,star}=req.body
+
   console.log( {customer,content,images,star})
   if(!images) images=[]
   const comment=new Comment({customer,content,images,star,product:id})
