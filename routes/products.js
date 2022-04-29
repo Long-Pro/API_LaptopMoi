@@ -83,12 +83,9 @@ router.get('/:id/comments', async function (req, res) {
   console.log('idCustomer',idCustomer)
 
   let docs=await Bill.find({customer:idCustomer})
-
   console.log(docs)
-
-
   docs.forEach(item=>{
-    if(item.products.find(pro=>pro.product==id)) {
+    if(item.type==3&&item.products.find(pro=>pro.product==id)) {
       isHasCommentPermission=true
       return
     }
