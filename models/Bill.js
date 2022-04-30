@@ -1,6 +1,6 @@
 const mongoose =require('mongoose');
 const { Schema } = mongoose;
-const BillShema = new Schema({
+const BillSchema = new Schema({
   customer:{ type: Schema.Types.ObjectId, ref: 'Customer' },
   type:Number,//0-đã hủy    1-đang xử lí    2-đag giao    3-đã giao
   products:[{
@@ -15,4 +15,4 @@ const BillShema = new Schema({
   address:String,
   phone:String,
 },{collection:'bill',timestamps:true});
-module.exports = mongoose.model('Bill', BillShema);
+module.exports = mongoose.model('Bill', BillSchema);
