@@ -17,45 +17,6 @@ router.get("/", async function (req, res) {
         path: "bill",
       });
 
-    if (notifications.length == 0) {
-      await NotificationModel.insertMany([
-        {
-          unread: true,
-          imageUrl: "https://reactjs.org/logo-og.png",
-          type: 0,
-          customerId: "619f269ee50eb7c579fb9643",
-          bill: "61b8598d9cb601a3f21de943",
-        },
-        {
-          unread: true,
-          imageUrl: "https://reactjs.org/logo-og.png",
-          type: 0,
-          customerId: "619f269ee50eb7c579fb9643",
-          bill: "61b8598d9cb601a3f21de943",
-        },
-        {
-          unread: true,
-          imageUrl: "https://reactjs.org/logo-og.png",
-          type: 0,
-          customerId: "619f269ee50eb7c579fb9643",
-          bill: "61b8598d9cb601a3f21de943",
-        },
-        {
-          unread: true,
-          imageUrl: "https://reactjs.org/logo-og.png",
-          type: 0,
-          customerId: "619f269ee50eb7c579fb9643",
-          bill: "61b8598d9cb601a3f21de943",
-        },
-        {
-          unread: true,
-          imageUrl: "https://reactjs.org/logo-og.png",
-          type: 0,
-          customerId: "619f269ee50eb7c579fb9643",
-          bill: "61b8598d9cb601a3f21de943",
-        },
-      ]);
-    }
     res.json({
       type: SUCCESS,
       message: [],
@@ -92,11 +53,12 @@ router.patch("/mark-as-read/:id", async function (req, res) {
 });
 
 router.get("/push", async function (req, res) {
-  const token = req.headers["x-access-token"];
+  // const token = req.headers["x-access-token"];
+  const { title, body, customerId } = req.body;
   try {
-    const id = jwt.verify(token, secret);
+    // const id = jwt.verify(token, secret);
 
-    const customer = await CustomerModel.findById(id.id);
+    const customer = await CustomerModel.findById(customerId);
     if (!customer) {
       res.json({
         type: FAIL,
@@ -108,11 +70,19 @@ router.get("/push", async function (req, res) {
     }
 
     const notificationToken = customer.notificationToken;
-    await pushNotification([notificationToken], {
-      title: "You've got mail! 📬",
-      body: "Here is the notification body",
-      data: { data: "goes here" },
-    });
+    if (notificationToken && notificationToken != "") {
+      await pushNotification([notificationToken], {
+        title: title,
+        body: body,
+        data: {},
+      });
+    }else {
+      res.json({
+        type: FAIL,
+        message: ["Customer has no token."],
+        data: {},
+      });
+    }
 
     res.json({
       type: SUCCESS,
