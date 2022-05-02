@@ -162,5 +162,49 @@ router.get("/information", function (req, res) {
     }
   });
 });
-
+router.put("/:id/avatar", async function (req, res) {
+  let id = req.params.id;
+  const { avatar } = req.body;
+  Customer.findOneAndUpdate(
+    { _id: id },
+    { avatar},
+    { new: true },
+    (err, docs) => {
+      if (err) {
+        res.json({
+          type: FAIL,
+          message: ["Chỉnh sửa ảnh đại diện thất bại"],
+        });
+        return;
+      }
+      res.json({
+        type: SUCCESS,
+        message: ["Chỉnh sửa ảnh đại diện thành công"],
+        data: docs,
+      });
+    }
+  );
+});
+router.delete("/:id/avatar", async function (req, res) {
+  let id = req.params.id;
+  Customer.findOneAndUpdate(
+    { _id: id },
+    { avatar:'https://file-store-1682.herokuapp.com/fileDB/1651240751527-user.png'},
+    { new: true },
+    (err, docs) => {
+      if (err) {
+        res.json({
+          type: FAIL,
+          message: ["Khôi phục ảnh đại diện thất bại"],
+        });
+        return;
+      }
+      res.json({
+        type: SUCCESS,
+        message: ["Khôi phục ảnh đại diện thành công"],
+        data: docs,
+      });
+    }
+  );
+});
 module.exports = router;

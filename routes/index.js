@@ -103,7 +103,8 @@ router.post("/staff/login", function (req, res) {
     });
   });
 });
-router.get("/", function (req, res) {
+router.get("/test", async function (req, res) {
+  let x = await Customer.updateMany({  }, { avatar:'https://file-store-1682.herokuapp.com/fileDB/1651240751527-user.png' });
   return res.json("123");
 });
 module.exports = router;
