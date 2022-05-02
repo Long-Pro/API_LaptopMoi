@@ -254,32 +254,33 @@ router.patch("/id", async function (req, res) {
   const notificationToken = bill.customer.notificationToken;
 
   console.log("token: ", notificationToken);
-
-  //0-đã hủy    1-đang xử lí    2-đang giao    3-đã giao
-  switch (type) {
-    case "0":
-      await pushNotification([notificationToken], {
-        title: "Đơn hàng bị huỷ.",
-        body: "Đơn hàng của bạn đã bị huỷ, Nhấn vào để xem chi tiết.",
-        data: { id: notification._id },
-      });
-      break;
-    case "2":
-      await pushNotification([notificationToken], {
-        title: "Đơn hàng đang được giao.",
-        body: "Đơn hàng của bạn đang được giao. Nhấn vào để xem chi tiết.",
-        data: { id: notification._id },
-      });
-      break;
-    case "3":
-      await pushNotification([notificationToken], {
-        title: "Đơn hàng giao thành công.",
-        body: "Đơn hàng của bạn đã được giao thành công. Nhấn vào để xem chi tiết.",
-        data: { id: notification._id },
-      });
-      break;
-    default:
-      break;
+  if (notificationToken && notificationToken != "") {
+    //0-đã hủy    1-đang xử lí    2-đang giao    3-đã giao
+    switch (type) {
+      case "0":
+        await pushNotification([notificationToken], {
+          title: "Đơn hàng bị huỷ.",
+          body: "Đơn hàng của bạn đã bị huỷ, Nhấn vào để xem chi tiết.",
+          data: { id: notification._id, billId: notification.bill._id },
+        });
+        break;
+      case "2":
+        await pushNotification([notificationToken], {
+          title: "Đơn hàng đang được giao.",
+          body: "Đơn hàng của bạn đang được giao. Nhấn vào để xem chi tiết.",
+          data: { id: notification._id, billId: notification.bill._id },
+        });
+        break;
+      case "3":
+        await pushNotification([notificationToken], {
+          title: "Đơn hàng giao thành công.",
+          body: "Đơn hàng của bạn đã được giao thành công. Nhấn vào để xem chi tiết.",
+          data: { id: notification._id, billId: notification.bill._id },
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   res.json({
