@@ -18,6 +18,7 @@ const CustomerSchema = new Schema(
     },
     password: String,
     notificationToken: String,
+    avatar:{ type: String, default: 'https://file-store-1682.herokuapp.com/fileDB/1651240751527-user.png' },
   },
   { collection: "customer", timestamps: true }
 );
