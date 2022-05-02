@@ -24,7 +24,7 @@ router.post("/customer/login", function (req, res) {
         message: ["Đăng nhập thất bại"],
       });
     if (docs && bcrypt.compareSync(password, docs.password)) {
-      const i = jwt.sign({ id: docs._id }, secret);
+      const i = jwt.sign({ id: docs._id }, secret,{ expiresIn: 60 * 60 * 12 });
       return res.json({
         type: SUCCESS,
         message: ["Đăng nhập thành công"],
@@ -65,7 +65,7 @@ router.post("/customers", async function (req, res) {
       password: hashPassword,
     });
     let x = await customer.save();
-    const i = jwt.sign({ id: x._id }, secret);
+    const i = jwt.sign({ id: x._id }, secret,{ expiresIn: 60 * 60 * 12 });
     res.json({
       type: SUCCESS,
       message: ["Đăng kí tài khoản thành công"],

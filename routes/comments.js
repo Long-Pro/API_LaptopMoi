@@ -38,7 +38,9 @@ router.delete('/:id',async  function (req, res) {
 })
 router.patch('/:id', function (req, res) {
   let {id}=req.params
-  let {content}=req.body
+  let {customer,content,images,star}=req.body
+  if(!images) images=[]
+  if(!content) content=''
   Comment.findById(id,(err,docs)=>{
     console.log(docs)
     let  now = new Date();
@@ -50,7 +52,7 @@ router.patch('/:id', function (req, res) {
         message:['Đã quá hạn sửa comment']
       })
     }
-    Comment.findOneAndUpdate({_id:id},{content},{new:true},(err,docs)=>{
+    Comment.findOneAndUpdate({_id:id},{content,content,images,star},{new:true},(err,docs)=>{
       console.log(docs)
       if(err) 
         return res.json({

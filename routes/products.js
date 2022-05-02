@@ -107,9 +107,9 @@ router.get('/:id/comments', async function (req, res) {
 router.post('/:id/comments', function (req, res) {
   let id=req.params.id
   let {customer,content,images,star}=req.body
-
   console.log( {customer,content,images,star})
   if(!images) images=[]
+  if(!content) content=''
   const comment=new Comment({customer,content,images,star,product:id})
   comment.save((err,docs)=>{
     console.log({err,docs})
