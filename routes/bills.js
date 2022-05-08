@@ -256,8 +256,8 @@ router.patch("/id", async function (req, res) {
   console.log("token: ", notificationToken);
   if (notificationToken && notificationToken != "") {
     //0-đã hủy    1-đang xử lí    2-đang giao    3-đã giao
-    switch (type) {
-      case "0":
+    switch (type.toString()) {
+      case "0" :
         await pushNotification([notificationToken], {
           title: "Đơn hàng bị huỷ.",
           body: "Đơn hàng của bạn đã bị huỷ, Nhấn vào để xem chi tiết.",
